@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -65,12 +66,30 @@ func TestNaive(t *testing.T) {
 				return img
 			}(),
 		},
+		{
+			"same_type_gray",
+			image.NewGray(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewGray(image.Rect(0, 0, 1, 1)),
+		},
+		{
+			"same_type_RGBA",
+			image.NewRGBA(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewRGBA(image.Rect(0, 0, 1, 1)),
+		},
+		{
+			"same_type_CMYK",
+			image.NewCMYK(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewCMYK(image.Rect(0, 0, 1, 1)),
+		},
 	}
 
 	for _, c := range cs {
 		t.Run(c.name, func(t *testing.T) {
 			got := Naive(c.img, c.width, c.height)
-			if !equalImage(c.expected, got) {
+			if !equalImage(c.expected, got) || !reflect.DeepEqual(c.expected, got) {
 				t.Errorf("expected: %v; got: %v;\n", c.expected, got)
 			}
 		})
@@ -121,31 +140,45 @@ func TestBilinear(t *testing.T) {
 			createCheckers(2),
 			3, 3,
 			func() image.Image {
-				img := image.NewRGBA(image.Rect(0, 0, 3, 3))
+				img := image.NewGray(image.Rect(0, 0, 3, 3))
 				img.Pix = []uint8{
-					255, 255, 255, 255,
-					127, 127, 127, 255,
-					0, 0, 0, 255,
-					127, 127, 127, 255,
-					127, 127, 127, 255,
-					127, 127, 127, 255,
-					0, 0, 0, 255,
-					127, 127, 127, 255,
-					255, 255, 255, 255,
+					255, 127, 0,
+					127, 127, 127,
+					0, 127, 255,
 				}
 				return img
 			}(),
+		},
+		{
+			"same_type_gray",
+			image.NewGray(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewGray(image.Rect(0, 0, 1, 1)),
+		},
+		{
+			"same_type_RGBA",
+			image.NewRGBA(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewRGBA(image.Rect(0, 0, 1, 1)),
+		},
+		{
+			"same_type_CMYK",
+			image.NewCMYK(image.Rect(0, 0, 1, 1)),
+			1, 1,
+			image.NewCMYK(image.Rect(0, 0, 1, 1)),
 		},
 	}
 
 	for _, c := range cs {
 		t.Run(c.name, func(t *testing.T) {
 			got := Bilinear(c.img, c.width, c.height)
-			if !equalImage(c.expected, got) {
+			if !equalImage(c.expected, got) || !reflect.DeepEqual(c.expected, got) {
 				t.Errorf("expected: %v; got: %v;\n", c.expected, got)
-				writetestimage(got, "bilinear-got-"+c.name, "png")
-				writetestimage(c.expected, "bilinear-expected-"+c.name, "png")
-				writetestimage(c.img, "bilinear-input-"+c.name, "png")
+				t.Errorf("DeepEqual: %v\n", reflect.DeepEqual(c.expected, got))
+				t.Errorf("%s: %T = %T\n", c.name, got, c.expected)
+				writetestimage(got, c.name+"-bilinear-got", "png")
+				writetestimage(c.expected, c.name+"-bilinear-expected", "png")
+				writetestimage(c.img, c.name+"-bilinear-input", "png")
 			}
 		})
 	}

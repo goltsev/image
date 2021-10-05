@@ -5,16 +5,22 @@ import (
 	"math"
 
 	"image/color"
+	"image/draw"
 )
 
 func Naive(src image.Image, width int, height int) image.Image {
 	if src == nil {
 		return nil
 	}
+	dst := createCanvas(src, width, height)
+	naiveResize(src, dst, width, height)
+	return dst
+}
+
+func naiveResize(src image.Image, dst draw.Image, width int, height int) {
 	rect := src.Bounds()
 	minx := rect.Min.X
 	miny := rect.Min.Y
-	dst := image.NewRGBA(image.Rect(minx, miny, width, height))
 	wratio := float64(rect.Max.X) / float64(width)
 	hratio := float64(rect.Max.Y) / float64(height)
 	for y := miny; y < height; y++ {
@@ -25,15 +31,50 @@ func Naive(src image.Image, width int, height int) image.Image {
 			)
 		}
 	}
-	return dst
 }
 
 func Bilinear(src image.Image, width int, height int) image.Image {
 	if src == nil {
 		return nil
 	}
+	dst := createCanvas(src, width, height)
+	bilinearResize(src, dst, width, height)
+	return dst
+}
+
+func createCanvas(src image.Image, width int, height int) draw.Image {
+	if src == nil {
+		return nil
+	}
+	srcrect := src.Bounds()
+	dstrect := image.Rect(srcrect.Min.X, srcrect.Min.Y, width, height)
+	var dst draw.Image
+	switch src.(type) {
+	case (*image.Gray):
+		dst = image.NewGray(dstrect)
+	case (*image.Gray16):
+		dst = image.NewGray16(dstrect)
+	case (*image.CMYK):
+		dst = image.NewCMYK(dstrect)
+	case (*image.RGBA):
+		dst = image.NewRGBA(dstrect)
+	case (*image.RGBA64):
+		dst = image.NewRGBA64(dstrect)
+	case (*image.NRGBA):
+		dst = image.NewNRGBA(dstrect)
+	case (*image.NRGBA64):
+		dst = image.NewNRGBA64(dstrect)
+	default:
+		dst = image.NewRGBA(dstrect)
+	}
+	return dst
+}
+
+func bilinearResize(src image.Image, dst draw.Image, width int, height int) {
+	if src == nil || dst == nil {
+		return
+	}
 	rect := src.Bounds()
-	dst := image.NewRGBA(image.Rect(rect.Min.X, rect.Min.Y, width, height))
 	widthRatio := ratio(float64(rect.Max.X-1), float64(width-1))
 	heightRatio := ratio(float64(rect.Max.Y-1), float64(height-1))
 	for y := rect.Min.Y; y < height; y++ {
@@ -43,10 +84,12 @@ func Bilinear(src image.Image, width int, height int) image.Image {
 			dst.Set(x, y, coordColor(src, x0, y0))
 		}
 	}
-	return dst
 }
 
 func coordColor(src image.Image, x0 float64, y0 float64) color.RGBA {
+	if src == nil {
+		return color.RGBA{}
+	}
 	xleft, xright := edges(x0)
 	ytop, ybot := edges(y0)
 
@@ -80,12 +123,12 @@ func edges(i float64) (left float64, right float64) {
 //   ---w---
 // weight is a difference between x and a coordinates
 func weightedAverageColor(a color.Color, b color.Color, weight float64) color.RGBA {
-	r0, g0, b0, _ := a.RGBA()
-	r1, g1, b1, _ := b.RGBA()
+	r0, g0, b0, a0 := a.RGBA()
+	r1, g1, b1, a1 := b.RGBA()
 	c := color.RGBA{
 		R: uint8((float64(r0)*(1-weight) + float64(r1)*weight) / 0x101),
 		G: uint8((float64(g0)*(1-weight) + float64(g1)*weight) / 0x101),
 		B: uint8((float64(b0)*(1-weight) + float64(b1)*weight) / 0x101),
-		A: 255}
+		A: uint8((float64(a0)*(1-weight) + float64(a1)*weight) / 0x101)}
 	return c
 }
