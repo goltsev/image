@@ -5,7 +5,6 @@ import (
 	"math"
 
 	"image/color"
-	"image/draw"
 )
 
 func Naive(src image.Image, width int, height int) image.Image {
@@ -89,28 +88,4 @@ func weightedAverageColor(a color.Color, b color.Color, weight float64) color.RG
 		B: uint8((float64(b0)*(1-weight) + float64(b1)*weight) / 0x101),
 		A: 255}
 	return c
-}
-
-func createSquare(size int) image.Image {
-	img := image.NewRGBA(image.Rect(0, 0, size, size))
-	blue := color.RGBA{0, 0, 255, 255}
-	red := color.RGBA{255, 0, 0, 255}
-	draw.Draw(img, img.Bounds(), image.NewUniform(blue), image.Point{}, draw.Src)
-	for i := 0; i < size; i++ {
-		img.Set(i, i, red)
-	}
-	return img
-}
-
-func createLine(width int, height int) image.Image {
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	blue := color.RGBA{0, 0, 255, 255}
-	red := color.RGBA{255, 0, 0, 255}
-	draw.Draw(img, img.Bounds(), image.NewUniform(blue), image.Point{}, draw.Src)
-	for i := 0; i < height; i++ {
-		for j := 0; j < width; j += 2 {
-			img.Set(j, i, red)
-		}
-	}
-	return img
 }

@@ -2,6 +2,7 @@ package resize
 
 import (
 	"bytes"
+	"errors"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -23,6 +24,9 @@ func ReadFile(filename string) (image.Image, string, error) {
 }
 
 func WriteFile(img image.Image, filename string, format string) error {
+	if img == nil {
+		return errors.New("image is nil")
+	}
 	buf := &bytes.Buffer{}
 	switch format {
 	case "png":
