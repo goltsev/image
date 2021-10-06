@@ -6,7 +6,7 @@ import (
 	"image/draw"
 )
 
-func createSquare(size int) image.Image {
+func CreateSquare(size int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, size, size))
 	blue := color.RGBA{0, 0, 255, 255}
 	red := color.RGBA{255, 0, 0, 255}
@@ -17,7 +17,7 @@ func createSquare(size int) image.Image {
 	return img
 }
 
-func createLine(width int, height int) image.Image {
+func CreateLine(width int, height int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	blue := color.RGBA{0, 0, 255, 255}
 	red := color.RGBA{255, 0, 0, 255}
@@ -30,7 +30,7 @@ func createLine(width int, height int) image.Image {
 	return img
 }
 
-func createCheckers(size int) image.Image {
+func CreateCheckers(size int) image.Image {
 	if size < 1 {
 		return nil
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func _TestCreateLine(t *testing.T) {
-	if err := writetestimage(createLine(10, 2), "line", "png"); err != nil {
+	if err := writetestimage(CreateLine(10, 2), "line", "png"); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -57,7 +57,7 @@ func TestCreateCheckers(t *testing.T) {
 	}
 	for _, c := range cs {
 		t.Run(c.name, func(t *testing.T) {
-			got := createCheckers(c.size)
+			got := CreateCheckers(c.size)
 			if !equalImage(got, c.expected) {
 				t.Errorf("expected: %v; got: %v;\n", c.expected, got)
 			}

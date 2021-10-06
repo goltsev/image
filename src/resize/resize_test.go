@@ -22,7 +22,7 @@ func TestNaive(t *testing.T) {
 	}{
 		{
 			"2x1-line",
-			createLine(2, 1),
+			CreateLine(2, 1),
 			3, 1,
 			func() image.Image {
 				img := image.NewRGBA(image.Rect(0, 0, 3, 1))
@@ -36,7 +36,7 @@ func TestNaive(t *testing.T) {
 		},
 		{
 			"2x2-line",
-			createLine(2, 2),
+			CreateLine(2, 2),
 			3, 2,
 			func() image.Image {
 				img := image.NewRGBA(image.Rect(0, 0, 3, 2))
@@ -53,7 +53,7 @@ func TestNaive(t *testing.T) {
 		},
 		{
 			"checkers",
-			createCheckers(2),
+			CreateCheckers(2),
 			4, 4,
 			func() image.Image {
 				img := image.NewGray(image.Rect(0, 0, 4, 4))
@@ -106,7 +106,7 @@ func TestBilinear(t *testing.T) {
 	}{
 		{
 			"2x1-line",
-			createLine(2, 1),
+			CreateLine(2, 1),
 			3, 1,
 			func() image.Image {
 				img := image.NewRGBA(image.Rect(0, 0, 3, 1))
@@ -120,7 +120,7 @@ func TestBilinear(t *testing.T) {
 		},
 		{
 			"2x2-line",
-			createLine(2, 2),
+			CreateLine(2, 2),
 			3, 2,
 			func() image.Image {
 				img := image.NewRGBA(image.Rect(0, 0, 3, 2))
@@ -137,7 +137,7 @@ func TestBilinear(t *testing.T) {
 		},
 		{
 			"checkers",
-			createCheckers(2),
+			CreateCheckers(2),
 			3, 3,
 			func() image.Image {
 				img := image.NewGray(image.Rect(0, 0, 3, 3))
