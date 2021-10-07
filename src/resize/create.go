@@ -6,6 +6,9 @@ import (
 	"image/draw"
 )
 
+// CreateSquare returns a square with a diagonal line of pixels
+// from top-left to bottom-right, where image width = size and image height = size.
+// Background is blue and the line is red.
 func CreateSquare(size int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, size, size))
 	blue := color.RGBA{0, 0, 255, 255}
@@ -17,6 +20,8 @@ func CreateSquare(size int) image.Image {
 	return img
 }
 
+// CreateLine creates a dotted line with specified width and height.
+// Background is blue and dots is red.
 func CreateLine(width int, height int) image.Image {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 	blue := color.RGBA{0, 0, 255, 255}
@@ -30,6 +35,9 @@ func CreateLine(width int, height int) image.Image {
 	return img
 }
 
+// CreateCheckers creates a checker board,
+// where image width = size and image height = size.
+// Step is 1 pixel. Colors are black and white.
 func CreateCheckers(size int) image.Image {
 	if size < 1 {
 		return nil

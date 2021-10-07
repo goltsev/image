@@ -23,6 +23,8 @@ func ReadFile(filename string) (image.Image, string, error) {
 	return img, format, nil
 }
 
+// WriteFile writes image to a file using specified file format.
+// png and jpeg are supported.
 func WriteFile(img image.Image, filename string, format string) error {
 	if img == nil {
 		return errors.New("image is nil")
@@ -38,11 +40,14 @@ func WriteFile(img image.Image, filename string, format string) error {
 			return err
 		}
 	}
+	return writefile(buf, filename)
+}
+
+func writefile(buf io.Reader, filename string) error {
 	outfile, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
-	defer outfile.Close()
 	io.Copy(outfile, buf)
-	return nil
+	return outfile.Close()
 }

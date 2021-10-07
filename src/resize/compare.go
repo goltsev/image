@@ -5,6 +5,7 @@ import (
 	"image/color"
 )
 
+// equalImage compares two images and returns true if they are the same
 func equalImage(img0, img1 image.Image) bool {
 	if img0 == nil || img1 == nil {
 		return img0 == img1
@@ -23,6 +24,7 @@ func equalImage(img0, img1 image.Image) bool {
 	return true
 }
 
+// equalColor compares two colors and returns true if they are the same
 func equalColor(c0, c1 color.Color) bool {
 	if c0 == nil || c1 == nil {
 		return c0 == c1
