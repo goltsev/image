@@ -64,8 +64,16 @@ func TestEqualImage(t *testing.T) {
 		},
 		{
 			"different color scale",
-			image.NewGray(image.Rect(0, 0, 1, 1)),
-			image.NewRGBA(image.Rect(0, 0, 1, 1)),
+			func() image.Image {
+				img := image.NewCMYK(image.Rect(0, 0, 1, 1))
+				img.Set(0, 0, color.RGBA{A: 255})
+				return img
+			}(),
+			func() image.Image {
+				img := image.NewRGBA(image.Rect(0, 0, 1, 1))
+				img.Set(0, 0, color.RGBA{A: 255})
+				return img
+			}(),
 			true,
 		},
 	}

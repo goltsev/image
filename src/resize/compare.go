@@ -29,9 +29,9 @@ func equalColor(c0, c1 color.Color) bool {
 	if c0 == nil || c1 == nil {
 		return c0 == c1
 	}
-	r0, g0, b0, _ := c0.RGBA()
-	r1, g1, b1, _ := c1.RGBA()
-	if r0 == r1 && g0 == g1 && b0 == b1 {
+	r0, g0, b0, a0 := c0.RGBA()
+	r1, g1, b1, a1 := c1.RGBA()
+	if r0 == r1 && g0 == g1 && b0 == b1 && a0 == a1 {
 		return true
 	}
 	return false
