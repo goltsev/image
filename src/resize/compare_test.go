@@ -14,11 +14,6 @@ func TestEqualImage(t *testing.T) {
 		expected bool
 	}{
 		{
-			"both nil",
-			nil, nil,
-			true,
-		},
-		{
 			"nil notnil",
 			nil, image.NewGray(image.Rect(0, 0, 1, 1)),
 			false,

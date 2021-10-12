@@ -6,9 +6,10 @@ import (
 )
 
 // equalImage compares two images and returns true if they are the same
+// if one of them is nil -- returns false
 func equalImage(img0, img1 image.Image) bool {
 	if img0 == nil || img1 == nil {
-		return img0 == img1
+		return false
 	}
 	if img0.Bounds() != img1.Bounds() {
 		return false

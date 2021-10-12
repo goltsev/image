@@ -37,6 +37,7 @@ func CreateLine(width int, height int) image.Image {
 
 // CreateCheckers creates a checker board,
 // where image width = size and image height = size.
+// If size is zero, function returns nil.
 // Step is 1 pixel. Colors are black and white.
 func CreateCheckers(size int) image.Image {
 	if size < 1 {

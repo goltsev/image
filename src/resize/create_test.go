@@ -18,11 +18,6 @@ func TestCreateCheckers(t *testing.T) {
 		expected image.Image
 	}{
 		{
-			"0",
-			0,
-			nil,
-		},
-		{
 			"1x1",
 			1,
 			func() *image.Gray {
