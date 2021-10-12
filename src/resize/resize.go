@@ -23,6 +23,9 @@ func Naive(src image.Image, width int, height int) image.Image {
 }
 
 func naiveResize(src image.Image, dst draw.Image, width int, height int) {
+	if src == nil || dst == nil {
+		return
+	}
 	rect := src.Bounds()
 	minx := rect.Min.X
 	miny := rect.Min.Y
@@ -108,10 +111,10 @@ func weightedAverageColor(a color.Color, b color.Color, weight float64) color.RG
 	r0, g0, b0, a0 := a.RGBA()
 	r1, g1, b1, a1 := b.RGBA()
 	c := color.RGBA{
-		R: uint8((float64(r0)*(1-weight) + float64(r1)*weight) / 0x101),
-		G: uint8((float64(g0)*(1-weight) + float64(g1)*weight) / 0x101),
-		B: uint8((float64(b0)*(1-weight) + float64(b1)*weight) / 0x101),
-		A: uint8((float64(a0)*(1-weight) + float64(a1)*weight) / 0x101)}
+		R: uint8(uint32(float64(r0)*(1-weight)+float64(r1)*weight) >> 8),
+		G: uint8(uint32(float64(g0)*(1-weight)+float64(g1)*weight) >> 8),
+		B: uint8(uint32(float64(b0)*(1-weight)+float64(b1)*weight) >> 8),
+		A: uint8(uint32(float64(a0)*(1-weight)+float64(a1)*weight) >> 8)}
 	return c
 }
 
