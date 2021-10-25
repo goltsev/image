@@ -16,7 +16,7 @@ func TestUploadImage(t *testing.T) {
 	stmock := mocks.NewMockStorage(ctrl)
 
 	r := bytes.NewBuffer([]byte("data"))
-	params := &usecases.UploadImageParams{
+	params := &usecases.UploadParams{
 		ID:       10,
 		Reader:   r,
 		Format:   "jpeg",
@@ -33,8 +33,8 @@ func TestUploadImage(t *testing.T) {
 		Put(ctx, params.Key(), params.Format, r).
 		Return(nil)
 
-	handler := usecases.NewUploadImageHandler(dbmock, stmock)
-	if err := handler.Save(ctx, params); err != nil {
+	handler := usecases.NewService(dbmock, stmock)
+	if err := handler.Upload(ctx, params); err != nil {
 		t.Error(err)
 	}
 }
