@@ -17,6 +17,21 @@ type UploadImageParams struct {
 	Filename string
 }
 
+// Key creates key from ID and Filename
+func (p *UploadImageParams) Key() string {
+	return fmt.Sprintf("%d/%s", p.ID, p.Filename)
+}
+
+// Image creates image
+func (p *UploadImageParams) Image() *models.Image {
+	return &models.Image{
+		ID:       p.ID,
+		Filename: p.Filename,
+		Format:   p.Format,
+	}
+}
+
+// UploadImageHandler is used to upload files to application.
 type UploadImageHandler struct {
 	db      Database
 	storage Storage
@@ -29,16 +44,19 @@ func NewUploadImageHandler(db Database, s Storage) *UploadImageHandler {
 	}
 }
 
+// Do calls Save with casted parameters.
+// It receives context.Context and UploadImageParams as parameters.
 func (h *UploadImageHandler) Do(ctx context.Context, v interface{}) error {
 	params, ok := v.(*UploadImageParams)
 	if !ok {
 		return NewErrWrongType(params, v)
 	}
-	return h.save(ctx, params)
+	return h.Save(ctx, params)
 }
 
-func (h *UploadImageHandler) save(ctx context.Context, params *UploadImageParams) error {
-	img := h.imgFromParams(params)
+// Save saves data from reader to application.
+func (h *UploadImageHandler) Save(ctx context.Context, params *UploadImageParams) error {
+	img := params.Image()
 	id, err := h.storeDB(ctx, img)
 	if err != nil {
 		return err
@@ -54,18 +72,7 @@ func (u *UploadImageHandler) storeDB(ctx context.Context, img *models.Image) (in
 	return u.db.Create(ctx, img)
 }
 
-func (u *UploadImageHandler) imgFromParams(params *UploadImageParams) *models.Image {
-	return &models.Image{
-		Filename: params.Filename,
-		Format:   params.Format,
-	}
-}
-
 func (u *UploadImageHandler) storeS3(ctx context.Context, params *UploadImageParams) error {
-	key := u.key(params)
+	key := params.Key()
 	return u.storage.Put(ctx, key, params.Format, params.Reader)
-}
-
-func (h *UploadImageHandler) key(params *UploadImageParams) string {
-	return fmt.Sprintf("%d/%s", params.ID, params.Filename)
 }
