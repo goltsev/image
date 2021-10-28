@@ -1,40 +1,78 @@
-package usecases_test
+package usecases
 
 import (
-	"bytes"
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/goltsev/image/src/usecases"
+	"github.com/goltsev/image/src/models"
 	"github.com/goltsev/image/src/usecases/mocks"
 )
 
-func TestUploadImage(t *testing.T) {
+func TestUpload(t *testing.T) {
+	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	dbmock := mocks.NewMockDatabase(ctrl)
 	stmock := mocks.NewMockStorage(ctrl)
+	s := NewService(dbmock, stmock)
 
-	r := bytes.NewBuffer([]byte("data"))
-	params := &usecases.UploadParams{
-		ID:       10,
-		Reader:   r,
-		Format:   "jpeg",
-		Filename: "img.jpg",
+	tests := []struct {
+		name       string
+		params     *UploadParams
+		dbmockcall *gomock.Call
+		errnil     bool
+	}{
+		{
+			"nil params",
+			nil,
+			nil,
+			false,
+		},
+		{
+			"error",
+			&UploadParams{
+				Format:   "text/plain",
+				Filename: "file.txt",
+			},
+			dbmock.
+				EXPECT().
+				CreateWithAction(
+					ctx,
+					&models.Image{
+						Format:   "text/plain",
+						Filename: "file.txt",
+					},
+					gomock.Any()).
+				Return(int64(0), errors.New("error")),
+			false,
+		},
+		{
+			"ok",
+			&UploadParams{
+				Format:   "text/plain",
+				Filename: "file.txt",
+			},
+			dbmock.
+				EXPECT().
+				CreateWithAction(
+					ctx,
+					&models.Image{
+						Format:   "text/plain",
+						Filename: "file.txt",
+					},
+					gomock.Any()).
+				Return(int64(1), nil),
+			true,
+		},
 	}
-
-	ctx := context.Background()
-	dbmock.
-		EXPECT().
-		Create(ctx, params.Image()).
-		Return(params.ID, nil)
-	stmock.
-		EXPECT().
-		Put(ctx, params.Key(), params.Format, r).
-		Return(nil)
-
-	handler := usecases.NewService(dbmock, stmock)
-	if err := handler.Upload(ctx, params); err != nil {
-		t.Error(err)
+	// tc = test case
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := s.Upload(ctx, tc.params); (err == nil) != tc.errnil {
+				t.Error(err)
+			}
+		})
 	}
 }

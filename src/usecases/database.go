@@ -9,6 +9,7 @@ import (
 
 type Database interface {
 	Create(context.Context, *models.Image) (int64, error)
-	GetID(context.Context, int64) (*models.Image, error)
-	GetRelated(context.Context, int64) ([]*models.Image, error)
+	CreateWithAction(context.Context, *models.Image, func(int64) error) (int64, error)
+	GetByID(context.Context, int64) (*models.Image, error)
+	GetByRelated(context.Context, int64) ([]*models.Image, error)
 }

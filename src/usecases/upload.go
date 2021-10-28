@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 
@@ -12,7 +13,7 @@ import (
 // UploadImageHandler command.
 type UploadParams struct {
 	ID       int64
-	Reader   io.Reader
+	Source   io.Reader
 	Format   string
 	Filename string
 }
@@ -33,23 +34,12 @@ func (p *UploadParams) Image() *models.Image {
 
 // Upload saves data from reader to application.
 func (s *Service) Upload(ctx context.Context, params *UploadParams) error {
-	img := params.Image()
-	id, err := s.storeDB(ctx, img)
-	if err != nil {
-		return err
+	if params == nil {
+		return errors.New("params cannot be nil")
 	}
-	params.ID = id
-	if err := s.storeS3(ctx, params); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s *Service) storeDB(ctx context.Context, img *models.Image) (int64, error) {
-	return s.db.Create(ctx, img)
-}
-
-func (s *Service) storeS3(ctx context.Context, params *UploadParams) error {
-	key := params.Key()
-	return s.s.Put(ctx, key, params.Format, params.Reader)
+	_, err := s.db.CreateWithAction(ctx, params.Image(), func(id int64) error {
+		params.ID = id
+		return s.s.Put(ctx, params.Key(), params.Format, params.Source)
+	})
+	return err
 }

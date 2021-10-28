@@ -50,32 +50,47 @@ func (mr *MockDatabaseMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDatabase)(nil).Create), arg0, arg1)
 }
 
-// GetID mocks base method.
-func (m *MockDatabase) GetID(arg0 context.Context, arg1 int64) (*models.Image, error) {
+// CreateWithAction mocks base method.
+func (m *MockDatabase) CreateWithAction(arg0 context.Context, arg1 *models.Image, arg2 func(int64) error) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetID", arg0, arg1)
+	ret := m.ctrl.Call(m, "CreateWithAction", arg0, arg1, arg2)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateWithAction indicates an expected call of CreateWithAction.
+func (mr *MockDatabaseMockRecorder) CreateWithAction(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWithAction", reflect.TypeOf((*MockDatabase)(nil).CreateWithAction), arg0, arg1, arg2)
+}
+
+// GetByID mocks base method.
+func (m *MockDatabase) GetByID(arg0 context.Context, arg1 int64) (*models.Image, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*models.Image)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetID indicates an expected call of GetID.
-func (mr *MockDatabaseMockRecorder) GetID(arg0, arg1 interface{}) *gomock.Call {
+// GetByID indicates an expected call of GetByID.
+func (mr *MockDatabaseMockRecorder) GetByID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetID", reflect.TypeOf((*MockDatabase)(nil).GetID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockDatabase)(nil).GetByID), arg0, arg1)
 }
 
-// GetRelated mocks base method.
-func (m *MockDatabase) GetRelated(arg0 context.Context, arg1 int64) ([]*models.Image, error) {
+// GetByRelated mocks base method.
+func (m *MockDatabase) GetByRelated(arg0 context.Context, arg1 int64) ([]*models.Image, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRelated", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByRelated", arg0, arg1)
 	ret0, _ := ret[0].([]*models.Image)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetRelated indicates an expected call of GetRelated.
-func (mr *MockDatabaseMockRecorder) GetRelated(arg0, arg1 interface{}) *gomock.Call {
+// GetByRelated indicates an expected call of GetByRelated.
+func (mr *MockDatabaseMockRecorder) GetByRelated(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRelated", reflect.TypeOf((*MockDatabase)(nil).GetRelated), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByRelated", reflect.TypeOf((*MockDatabase)(nil).GetByRelated), arg0, arg1)
 }
